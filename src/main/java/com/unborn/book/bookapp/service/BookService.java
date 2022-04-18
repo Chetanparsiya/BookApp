@@ -1,17 +1,18 @@
 package com.unborn.book.bookapp.service;
 
+import com.unborn.book.bookapp.datatransferobject.BookDto;
 import com.unborn.book.bookapp.entities.Book;
 
 import java.util.Collection;
 
 public interface BookService {
-    Collection<Book> findAll();
+    Collection<BookDto> findAll();
 
-    Book findById();
+    BookDto findById();
 
-    Book createBook();
+    BookDto createBook();
 
-    Book updateBook();
+    BookDto updateBook();
 
     void deleteBook();
 }
