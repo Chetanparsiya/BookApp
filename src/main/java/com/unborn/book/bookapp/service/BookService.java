@@ -8,11 +8,11 @@ import java.util.Collection;
 public interface BookService {
     Collection<BookDto> findAll();
 
-    BookDto findById();
+    BookDto findById(Long id);
 
-    BookDto createBook();
+    BookDto createBook(BookDto bookDto);
 
-    BookDto updateBook();
+    BookDto updateBook(BookDto bookDto, Long id);
 
-    void deleteBook();
+    void deleteBook(Long id);
 }
