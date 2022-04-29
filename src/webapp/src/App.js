@@ -15,6 +15,7 @@ function App() {
         <Routes>
           <Route exact path="/" element={<Jumbotron />} />
           <Route exact path="/add-book" element={<AddBook />} />
+          <Route  path="/edit/:id" element={<AddBook />} />
           <Route exact path="/books" element={<BookList/>} />
         </Routes>
         
