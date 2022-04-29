@@ -6,6 +6,7 @@ import com.unborn.book.bookapp.exceptions.ApiResponse;
 import com.unborn.book.bookapp.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("api/v1/books")
+@CrossOrigin(origins = "http://localhost:3000")
 public class BookController {
 
     @Autowired
@@ -27,7 +29,8 @@ public class BookController {
         return new ResponseEntity<Collection<BookDto>>(bookService.findAll(), HttpStatus.OK);
     }
 
-    @PostMapping
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BookDto> createBooks(@RequestBody BookDto bookDto){
         return new ResponseEntity<BookDto>(bookService.createBook(bookDto), HttpStatus.CREATED);
     }
@@ -39,6 +42,7 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteBook(@PathVariable Long id){
+        bookService.deleteBook(id);
         return new ResponseEntity<ApiResponse>(new ApiResponse("Book with id: "+id, true),HttpStatus.OK);
     }
 }
