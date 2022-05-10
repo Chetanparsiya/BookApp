@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -25,24 +26,28 @@ public class BookController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<Collection<BookDto>> getBooks(){
         return new ResponseEntity<Collection<BookDto>>(bookService.findAll(), HttpStatus.OK);
     }
 
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<BookDto> createBooks(@RequestBody BookDto bookDto){
-        return new ResponseEntity<BookDto>(bookService.createBook(bookDto), HttpStatus.CREATED);
+        return new ResponseEntity<BookDto>(bookService.create(bookDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<BookDto> updateBooks(@RequestBody BookDto bookDto,@PathVariable Long id){
-        return new ResponseEntity<BookDto>(bookService.updateBook(bookDto,id),HttpStatus.OK);
+        return new ResponseEntity<BookDto>(bookService.update(bookDto,id),HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse> deleteBook(@PathVariable Long id){
-        bookService.deleteBook(id);
+        bookService.delete(id);
         return new ResponseEntity<ApiResponse>(new ApiResponse("Book with id: "+id, true),HttpStatus.OK);
     }
 }

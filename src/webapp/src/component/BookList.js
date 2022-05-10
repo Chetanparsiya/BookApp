@@ -4,18 +4,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faList, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import MyToast from "./MyToast";
-import { useLocation,Link, useNavigate } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 export default function BookList() {
   const [books, setBooks] = useState([]);
   const [show, setShow] = useState(false);
   const [action, setAction] = useState({ type: "", message: "" });
   const location = useLocation();
-  const navigate = useNavigate();
-  const [firstTime, setFirstTime] = useState(true)
   //const
+
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/v1/books/")
+      .get("http://localhost:8080/api/v1/books/", {
+        headers: {
+          Authorizations: window.localStorage.getItem("token"),
+        },
+      })
       .then((res) => setBooks(res.data));
     debugger;
   }, []);
@@ -23,22 +26,26 @@ export default function BookList() {
   useEffect(() => {
     debugger;
     console.log("Chetan", location);
-    if (location?.state?.status && firstTime) {
+    if (location?.state?.status) {
       setShow(true);
-      setFirstTime(false)
-     
     }
     setInterval(() => setShow(false), 3000);
     setAction({ type: "success", message: "Book Saved Successfully" });
   }, [location?.state?.status]);
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:8080/api/v1/books/${id}`).then((res) => {
-      setBooks(books.filter((r) => r.id !== id));
-      setShow(true);
-      setInterval(() => setShow(false), 3000);
-      setAction({ type: "danger", message: "Book Deleted Successfully" });
-    });
+    axios
+      .delete(`http://localhost:8080/api/v1/books/${id}`, {
+        headers: {
+          Authorizations: window.localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        setBooks(books.filter((r) => r.id !== id));
+        setShow(true);
+        setInterval(() => setShow(false), 3000);
+        setAction({ type: "danger", message: "Book Deleted Successfully" });
+      });
   };
 
   return (
@@ -81,7 +88,7 @@ export default function BookList() {
                       <td>{book.language}</td>
                       <td>
                         <Link
-                          to={"/edit/"+book.id}
+                          to={"/edit/" + book.id}
                           className="btn btn-sm btn-outline-primary"
                         >
                           <FontAwesomeIcon icon={faEdit} />

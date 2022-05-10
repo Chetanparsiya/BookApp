@@ -6,6 +6,8 @@ import com.unborn.book.bookapp.exceptions.ResourceNotFoundException;
 import com.unborn.book.bookapp.helper.ExcelHelper;
 import com.unborn.book.bookapp.repository.BookRepository;
 import com.unborn.book.bookapp.service.BookService;
+import com.unborn.book.bookapp.service.IExcelService;
+import com.unborn.book.bookapp.service.IService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,14 +41,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto createBook(BookDto bookDto) {
+    public BookDto create(BookDto bookDto) {
         Book book = bookDtoToBook(bookDto);
         Book createdBook = bookRepository.save(book);
         return  bookToBookDto(createdBook);
     }
 
     @Override
-    public BookDto updateBook(BookDto bookDto, Long id) {
+    public BookDto update(BookDto bookDto, Long id) {
         Book book = bookRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Book", "Book Id", id));
         book.setAuthor(bookDto.getAuthor());
         book.setTitle(bookDto.getTitle());
@@ -59,23 +61,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void deleteBook(Long id) {
+    public void delete(Long id) {
         Book book = bookRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Book", "Book Id", id));
         bookRepository.deleteById(id);
     }
 
-    @Override
-    public List<BookDto> importExcel(MultipartFile file) {
-        List<BookDto> bookDtos= new ArrayList<BookDto>();
-        try {
-            List<Book> books = ExcelHelper.excelToTutorials(file.getInputStream());
-            List<Book> savedBooks = bookRepository.saveAll(books);
-            bookDtos = savedBooks.stream().map(book -> bookToBookDto(book)).collect(Collectors.toList());
-        }catch (IOException e){
-            throw new RuntimeException("fail to store excel data: " + e.getMessage());
-        }
-    return bookDtos;
-    }
 
     public BookDto bookToBookDto(Book book){
         return modelMapper.map(book,BookDto.class);
