@@ -23,10 +23,14 @@ export default function AddBook() {
     setInputs(initalState);
   }
 
+  const headers = {    
+    'Authorizations': window.localStorage.getItem("token")
+  }
+
   useEffect(()=> {
     if(id!==undefined){
       axios
-      .get(`http://localhost:8080/api/v1/books/${id}`)
+      .get(`http://localhost:8080/api/v1/books/${id}`, {headers: headers})
       .then((res) => setInputs(res.data));
     }
   },[id])
@@ -35,11 +39,11 @@ export default function AddBook() {
     event.preventDefault();
     console.log(inputs);
    if(id===undefined)
-    axios.post("http://localhost:8080/api/v1/books/", inputs).then((res) => {
+    axios.post("http://localhost:8080/api/v1/books/", inputs, {headers: headers}).then((res) => {
      navigate('/books', {state:{status: true,firstTime: true} })
     })
     else {
-      axios.put(`http://localhost:8080/api/v1/books/${id}`, inputs).then((res) => {
+      axios.put(`http://localhost:8080/api/v1/books/${id}`, inputs, {headers: headers}).then((res) => {
      navigate('/books', {state:{status: true,firstTime: true} })
     })
     }
