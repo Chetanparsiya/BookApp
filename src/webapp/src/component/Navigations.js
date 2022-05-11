@@ -7,7 +7,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { Navbar, Container, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
-const UserList = () => (
+import { useAuth } from "./AuthProvider";
+const UserList = ({auth}) => (
   <>
     <Nav className="me-auto">
       <Link to={"/add-book"} className="nav-link">
@@ -18,7 +19,7 @@ const UserList = () => (
       </Link>
     </Nav>
     <Nav className="navbar-right">
-      <Link to={"logout"} onClick ={() => window.localStorage.clear()} className="nav-link">
+      <Link to={"/"} onClick ={() => auth.signOut()} className="nav-link">
         <FontAwesomeIcon icon={faSignOut} /> Logout
       </Link>
     </Nav>
@@ -36,6 +37,7 @@ const GuestList = () => (
   </Nav>
 );
 export default function Navigations() {
+  const auth = useAuth()
   return (
     <div>
       <Navbar bg="dark" variant="dark">
@@ -43,7 +45,7 @@ export default function Navigations() {
           <Link to={"/"} className="navbar-brand">
             Book App
           </Link>
-          {window.localStorage.getItem("token") ? <UserList /> : <GuestList />}
+          {auth.isLoggedIn ? <UserList auth={auth} /> : <GuestList />}
         </Container>
       </Navbar>
     </div>

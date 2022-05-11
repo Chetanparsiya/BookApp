@@ -1,11 +1,13 @@
 package com.unborn.book.bookapp.config;
 
+import com.unborn.book.bookapp.datatransferobject.JwtResponse;
 import com.unborn.book.bookapp.entities.Role;
-import com.unborn.book.bookapp.serviceimpl.UserDetailsServiceImpl;
+import com.unborn.book.bookapp.entities.User;
+import com.unborn.book.bookapp.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.TextCodec;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
 
@@ -31,13 +32,22 @@ public class JwtTokenProvider implements Serializable {
     @Value("${jwt.Expirations}")
     private long validityInMiliSeconds ;
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
     @PostConstruct
     protected void init(){
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String username, Role role){
+    public JwtResponse createToken(String username, Role role){
         Claims  claims = Jwts.claims().setSubject(username);
+        User user =  userRepository.findByEmail(username);
         claims.put("auth", role.getName());
         Date date = new Date();
         String jws = Jwts.builder()
@@ -49,13 +59,17 @@ public class JwtTokenProvider implements Serializable {
                         secretKey
                 )
                 .compact();
-
-
-        return jws;
+        JwtResponse jwtResponse = new JwtResponse();
+        jwtResponse.setToken(jws);
+        jwtResponse.setExpiryTime(new Date(date.getTime() + validityInMiliSeconds));
+        jwtResponse.setGenerateTime(date);
+        jwtResponse.setException("");
+        jwtResponse.setName(user.getName());
+        jwtResponse.setUsername(user.getEmail());
+        return jwtResponse;
     }
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+
 
     public Authentication getAuthentication(String username){
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);

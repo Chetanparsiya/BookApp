@@ -39,27 +39,29 @@ public class BookappApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Role role = new Role();
-		role.setName("admin");
-		roleRepository.save(role);
+		User user = userRepository.findByEmail("chetan@gmail.com");
+		if(user==null) {
+			Role role = new Role();
+			role.setName("admin");
+			roleRepository.save(role);
 
-		User user1= new User();
-		user1.setRole(roleRepository.findById(1L).orElse(null));
-		user1.setEmail("chetan@gmail.com");
-		user1.setPassword(new BCryptPasswordEncoder().encode("chetan"));
-		user1.setName("Chetan");
-		user1.setContact("231231");
-		userRepository.save(user1);
+			User user1 = new User();
+			user1.setRole(roleRepository.findById(1L).orElse(null));
+			user1.setEmail("chetan@gmail.com");
+			user1.setPassword(new BCryptPasswordEncoder().encode("chetan"));
+			user1.setName("Chetan");
+			user1.setContact("231231");
+			userRepository.save(user1);
 
-		User user2= new User();
-		user1.setRole(roleRepository.findById(1L).orElse(null));
-		user1.setEmail("chetanp@gmail.com");
-		user1.setPassword(new BCryptPasswordEncoder().encode("chetan1"));
-		user1.setName("Chetan P");
-		user1.setContact("2312321");
-		userRepository.save(user2);
+			User user2 = new User();
+			user1.setRole(roleRepository.findById(1L).orElse(null));
+			user1.setEmail("chetanp@gmail.com");
+			user1.setPassword(new BCryptPasswordEncoder().encode("chetan1"));
+			user1.setName("Chetan P");
+			user1.setContact("2312321");
+			userRepository.save(user2);
 
-
+		}
 
 	}
 }

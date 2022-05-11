@@ -1,16 +1,14 @@
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
-import {IsLogin } from './IsLogin';
+import { Route, Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from './AuthProvider';
 
-export default function PrivateRoute({component: Component, ...rest}) {
-    return (
+export const PrivateWrapper= () => {
+    const auth = useAuth();
+    
+    return auth?.isLoggedIn ? <Outlet /> : <Navigate to="/404" />;
+  };
 
-        // Show the component only when the user is logged in
-        // Otherwise, redirect the user to /signin page
-        <Route {...rest} render={props => (
-            IsLogin() ?
-                <Component {...props} />
-            : <Redirect to="/login" />
-        )} />
-    );
-};
+  export const PublicWrapper= () => {
+    const auth = useAuth();    
+    return auth?.isLoggedIn ? <Navigate to="/" /> : <Outlet /> ;
+  };
