@@ -10,13 +10,17 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
-
 import { Card, Row, Col, Form,Button, FormControl, InputGroup } from "react-bootstrap";
+import axios from "axios";
 export default function Register() {
   const initialState = {name: '', email : '', password: '', contact:''}
   const [userRegistrationDetails, setUserRegistrationsDetails] = useState(initialState)
   const reset = () => {
     setUserRegistrationsDetails(initialState);
+  }
+
+  const register = () => {
+    axios.post("http://localhost:8080/api/v1/user/register", userRegistrationDetails).then(res => console.log(res))
   }
 
   const onChange = (e) => {
@@ -108,7 +112,7 @@ export default function Register() {
                   </Row>
             </Card.Body>
             <Card.Footer style={{textAlign :"right"}} className="m-2">
-            <Button  size="sm" variant="success" disabled={userRegistrationDetails.name.length===0 || userRegistrationDetails.email.length===0 || userRegistrationDetails.password.length === 0 || userRegistrationDetails.contact.length === 10}>
+            <Button  size="sm" onClick={register} variant="success" disabled={userRegistrationDetails.name.length===0 || userRegistrationDetails.email.length===0 || userRegistrationDetails.password.length === 0 || userRegistrationDetails.contact.length === 10}>
                 <FontAwesomeIcon icon={faUserPlus} />Register
               </Button>{' '}
               <Button size="sm" onClick={reset} variant="info" disabled={userRegistrationDetails.name.length===0 && userRegistrationDetails.email.length===0 && userRegistrationDetails.password.length === 0 && userRegistrationDetails.contact.length === 0}>

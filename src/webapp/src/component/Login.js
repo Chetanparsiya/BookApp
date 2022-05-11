@@ -5,7 +5,7 @@ import {
   faUndo,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
   Card,
@@ -19,25 +19,32 @@ import {
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
+import { useAuth } from "./AuthProvider";
+
 export default function Login() {
+  debugger
   const navigate = useNavigate();
-  const initialState = { email: "", password: "" , error: ""};
+  const initialState = { email: "", password: "", error: "" };
   const [userLoginCredential, setUserLoginCredential] = useState(initialState);
   const reset = () => {
     setUserLoginCredential(initialState);
   };
-
+  const auth = useAuth();
   const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': window.localStorage.getItem("token")
-  }
+    "Content-Type": "application/json",
+    Authorization: window.localStorage.getItem("token"),
+  };
 
-
+  useEffect(() => {
+    if(auth.isLoggedIn){
+      navigate("/")
+    }
+  }, [auth.isLoggedIn])
   const login = () => {
-    debugger
-    axios.post("http://localhost:8080/api/v1/user/authenticate", userLoginCredential).then(res =>{ window.localStorage.setItem("token", res.data.token); navigate('/books')})
-  
- }
+    debugger;
+    auth.signin(userLoginCredential);
+    // axios.post("http://localhost:8080/api/v1/user/authenticate", userLoginCredential).then(res =>{ window.localStorage.setItem("token", res.data.token); navigate('/books')})
+  };
 
   const onChange = (e) => {
     setUserLoginCredential({
@@ -48,10 +55,14 @@ export default function Login() {
   };
   return (
     <>
-      
       <Row className="justify-content-md-center mt-3">
         <Col xs={3}>
-        {true&& <Alert  key='danger' variant='danger'> Invalid Login Credentail</Alert>}
+          {auth?.errors!== null && (
+            <Alert key="danger" variant="danger">
+              {" "}
+              Invalid Login Credentail
+            </Alert>
+          )}
           <Card className="border border-dark bg-dark text-white">
             <Card.Header>
               <FontAwesomeIcon icon={faSignInAlt} />
