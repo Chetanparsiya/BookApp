@@ -22,7 +22,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthProvider";
 
 export default function Login() {
-  debugger
   const navigate = useNavigate();
   const initialState = { email: "", password: "", error: "" };
   const [userLoginCredential, setUserLoginCredential] = useState(initialState);
@@ -34,14 +33,12 @@ export default function Login() {
     "Content-Type": "application/json",
     Authorization: window.localStorage.getItem("token"),
   };
-
   useEffect(() => {
     if(auth.isLoggedIn){
       navigate("/")
     }
   }, [auth.isLoggedIn])
   const login = () => {
-    debugger;
     auth.signin(userLoginCredential);
     // axios.post("http://localhost:8080/api/v1/user/authenticate", userLoginCredential).then(res =>{ window.localStorage.setItem("token", res.data.token); navigate('/books')})
   };

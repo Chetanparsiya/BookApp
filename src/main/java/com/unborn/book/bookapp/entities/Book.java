@@ -20,5 +20,6 @@ public class Book {
     private String coverPhotoUrl;
     private Long isbnNumber;
     private Double price;
+    
     private String language;
 }
