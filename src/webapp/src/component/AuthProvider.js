@@ -19,7 +19,8 @@ function useProvideAuth() {
   const [token, setToken] = useState("");
   const [jwtResponse,setJwtResponse] = useState(null)
   useEffect(()=> {
-    if(new Date(jwtResponse?.expiryTime).getTime()>new Date().getTime())
+    debugger
+    if(new Date(jwtResponse?.expiryTime)<Date.now())
     signOut();
   })
   useEffect(() => {
@@ -30,7 +31,6 @@ function useProvideAuth() {
   }, [])
   function signin(userLoginCredential) {
     setIsLoading(true);
-    debugger
     axios
       .post(
         "http://localhost:8080/api/v1/user/authenticate",

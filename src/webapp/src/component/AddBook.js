@@ -89,7 +89,7 @@ export default function AddBook() {
                     name="author"
                     onChange={handleInputChange}
                     value={inputs.author}
-                    className="bg-dark text-white"
+                    
                     placeholder="Enter Book Author"
                   />
                 </Form.Group>

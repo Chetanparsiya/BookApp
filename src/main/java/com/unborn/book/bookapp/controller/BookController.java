@@ -1,6 +1,8 @@
 package com.unborn.book.bookapp.controller;
 
+import com.unborn.book.bookapp.config.AppConstant;
 import com.unborn.book.bookapp.datatransferobject.BookDto;
+import com.unborn.book.bookapp.datatransferobject.BookResponseDto;
 import com.unborn.book.bookapp.entities.Book;
 import com.unborn.book.bookapp.exceptions.ApiResponse;
 import com.unborn.book.bookapp.service.BookService;
@@ -27,8 +29,12 @@ public class BookController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<Collection<BookDto>> getBooks(){
-        return new ResponseEntity<Collection<BookDto>>(bookService.findAll(), HttpStatus.OK);
+    public ResponseEntity<BookResponseDto> getBooks(@RequestParam(value = "pageNumber", defaultValue = AppConstant.PAGE_NUMBER, required = false) int pageNumber,
+                                                        @RequestParam(value = "pageSize", defaultValue = AppConstant.PAGE_SIZE, required = false) int pageSize,
+                                                        @RequestParam(value = "sortBy", defaultValue = AppConstant.SORT_BY,required = false) String sortBy,
+                                                        @RequestParam(value = "sortDir",defaultValue = AppConstant.SORT_DIR, required = false) String sortDir){
+        BookResponseDto bookResponseDto = bookService.findAll(pageSize,pageNumber, sortBy,sortDir);
+        return new ResponseEntity<BookResponseDto>(bookService.findAll(pageSize, pageNumber, sortBy, sortDir), HttpStatus.OK);
     }
 
 

@@ -9,14 +9,14 @@ import Login from "./component/Login";
 import Register from "./component/Register";
 import NotFound from "./component/NotFound";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { ProvideAuth } from "./component/AuthProvider";
-import { PrivateWrapper,PublicWrapper } from "./component/PrivateRoute";
+import { ProvideAuth, useAuth } from "./component/AuthProvider";
+import { PrivateWrapper, PublicWrapper } from "./component/PrivateRoute";
 
 function App() {
   return (
     <>
-      <Router>
-        <ProvideAuth>
+      <ProvideAuth>
+        <Router>
           <Navigations />
           <Routes>
             <Route exact path="/" element={<Jumbotron />} />
@@ -34,8 +34,8 @@ function App() {
           </Routes>
 
           <Footer />
-        </ProvideAuth>
-      </Router>
+        </Router>
+      </ProvideAuth>
     </>
   );
 }
